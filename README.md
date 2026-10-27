@@ -97,3 +97,35 @@ puzzle independently. A local computer owner can inspect both parties.
 Original course PDFs and the user-provided video remain in the parent directory.
 No interpretation of the video is claimed; it was not used as an authoritative
 protocol source.
+
+## Protocol Lab
+
+Open **http://127.0.0.1:8767/lab.html**, or select Protocol Lab from the lesson.
+
+- Run `Session.seal`, `Session.challenge`, and `Session.open` one step at a time.
+- Inspect actual public messages, compact UTF-8 byte counts, and the exact
+  Python function source loaded from the implementation.
+- Check the encoded opening input, recomputed SHA-256 digest and original seal.
+- Alter a copy of a colour, salt, vertex identifier or commitment and invoke the
+  same verifier. The original session and public record remain unchanged.
+- Download a public transcript or import one to check it locally.
+
+Verify a downloaded transcript without the server or a prover:
+
+```sh
+python3 transcript.py transcript.json
+```
+
+Exit code 0 means every recorded opening/check passed; exit code 1 means rejection
+or invalid input. The output details individual checks. The file includes public
+graph structure and completed rounds only, with no session credential, witness,
+or unopened values. In-progress rounds are not exported.
+
+**Transcript verification is not proof of challenge randomness.** A file can
+contain valid arranged openings, including a simulator-produced record. The
+checker cannot establish how a live verifier selected challenges. The lab can
+continue independent checks after rejection for teaching; a real proof attempt
+would reject immediately.
+
+The old browser-only demonstration remains separate from this Python project.
+All primary references are collected on the Sources page.

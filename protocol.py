@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import hmac
 import itertools
@@ -36,17 +37,22 @@ def valid_colour(value):
     return type(value) is int and value in (0, 1, 2)
 
 
-def commit(vertex: int, colour: int, salt: str) -> str:
+def encode_commitment(vertex: int, colour: int, salt: str) -> bytes:
     if not valid_colour(colour) or type(vertex) is not int or vertex < 0:
         raise ValueError("Invalid vertex or colour")
     if not isinstance(salt, str) or len(salt) != SALT_BYTES * 2:
         raise ValueError("Invalid salt")
     try:
-        bytes.fromhex(salt)
+        if len(bytes.fromhex(salt)) != SALT_BYTES:
+            raise ValueError("Invalid salt length")
     except ValueError as error:
         raise ValueError("Invalid salt") from error
     payload = json.dumps(["zk-colouring-v1", vertex, colour, salt], separators=(",", ":"))
-    return hashlib.sha256(payload.encode("ascii")).hexdigest()
+    return payload.encode("ascii")
+
+
+def commit(vertex: int, colour: int, salt: str) -> str:
+    return hashlib.sha256(encode_commitment(vertex, colour, salt)).hexdigest()
 
 
 def bad_edges(graph: Graph, colouring) -> list[int]:
@@ -103,6 +109,18 @@ class Session:
         self.edge, self.openings, self.verdict = None, [], None
         self.visible, self.history = {}, []
         self.random_challenge = True
+        self.events, self.records = [], []
+
+    def record_message(self, sender, recipient, function, payload):
+        self.events.append({"sequence": len(self.events) + 1, "round": self.round,
+                            "sender": sender, "recipient": recipient,
+                            "function": function, "payload": copy.deepcopy(payload),
+                            "bytes": len(json.dumps(payload, separators=(",", ":")).encode())})
+
+    def transcript(self):
+        return {"format": "hidden-colouring-transcript-v1",
+                "graph": {"vertices": list(self.graph.vertices), "edges": list(self.graph.edges)},
+                "rounds": copy.deepcopy(self.records)}
 
     def seal(self):
         if self.phase != "ready":
@@ -114,6 +132,7 @@ class Session:
             self.salts = [secrets.token_hex(SALT_BYTES) for _ in self.colours]
             self.commitments = [commit(i, c, self.salts[i]) for i, c in enumerate(self.colours)]
         self.phase = "sealed"
+        self.record_message("Prover", "Verifier", "Session.seal", {"commitments": self.commitments})
 
     def challenge(self, edge=None):
         if self.phase != "sealed":
@@ -123,13 +142,18 @@ class Session:
         self.random_challenge = edge is None
         self.edge = secrets.randbelow(len(self.graph.edges)) if edge is None else edge
         self.phase = "challenged"
+        self.record_message("Verifier", "Prover", "Session.challenge", {"edge": self.edge})
 
     def open(self):
         if self.phase != "challenged":
             raise ValueError("Choose a challenge before opening")
         self.openings = [{"vertex": v, "colour": self.colours[v], "salt": self.salts[v]}
                          for v in self.graph.edges[self.edge]]
+        self.record_message("Prover", "Verifier", "Session.open", {"openings": self.openings})
         self.verdict = verify(self.graph, self.commitments, self.edge, self.openings)
+        self.records.append(copy.deepcopy({"round": self.round, "commitments": self.commitments,
+                                          "edge": self.edge, "openings": self.openings,
+                                          "challenge_kind": "random" if self.random_challenge else "manual"}))
         self.visible.update({str(o["vertex"]): o["colour"] for o in self.openings})
         self.history.append({"round": self.round, "edge": self.edge,
                              "random": self.random_challenge, **self.verdict})
@@ -153,6 +177,7 @@ class Session:
                 "commitments": list(self.commitments), "edge": self.edge,
                 "openings": list(self.openings), "visible": dict(self.visible),
                 "verdict": self.verdict, "history": list(self.history),
+                "events": copy.deepcopy(self.events), "completed_rounds": len(self.records),
                 "bad_count": len(bad_edges(graph, colouring_for(graph, self.mode)))}
 
 

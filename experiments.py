@@ -1,6 +1,7 @@
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import platform
@@ -100,9 +101,11 @@ def main():
     with (args.out/'experiments.csv').open('w', newline='') as f:
         writer=csv.DictWriter(f, fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
     meta={'generated_utc':datetime.now(timezone.utc).isoformat(), 'python':platform.python_version(),
-          'platform':platform.platform(), 'trials_per_configuration':args.trials,
+          'platform':platform.platform(),
+          'source_sha256':{name:hashlib.sha256((Path(__file__).resolve().parent/name).read_bytes()).hexdigest()
+                           for name in ('protocol.py','experiments.py')}, 'trials_per_configuration':args.trials,
           'randomness':'OS-backed secrets; fresh independent proof runs',
-          'measurement':'Wall time includes protocol, verification, and JSON serialisation. Bytes count compact application transcripts, not HTTP overhead. Runs stop at first rejection.',
+          'measurement':'Wall time includes protocol, verification, public-evidence recording, and JSON serialisation. Bytes count compact application transcripts, not HTTP overhead. Runs stop at first rejection.',
           'intervals':'95% Wilson intervals for observed acceptance; lines are exact probabilities for the fixed strategies, not a proof for all adversaries.',
           'results':rows}
     (args.out/'experiments.json').write_text(json.dumps(meta, indent=2))

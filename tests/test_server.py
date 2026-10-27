@@ -4,7 +4,7 @@ import unittest
 from http.server import ThreadingHTTPServer
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
-from server import Handler
+from server import Handler, SESSIONS
 
 
 class ServerTests(unittest.TestCase):
@@ -19,8 +19,8 @@ class ServerTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.server.shutdown(); cls.server.server_close(); cls.thread.join()
 
-    def post(self, data, headers=None):
-        request = Request(self.url+'/api/protocol', json.dumps(data).encode(),
+    def post(self, data, headers=None, path="/api/protocol"):
+        request = Request(self.url+path, json.dumps(data).encode(),
                           headers={'Content-Type': 'application/json', **(headers or {})})
         try:
             with urlopen(request) as response:
@@ -61,6 +61,48 @@ class ServerTests(unittest.TestCase):
             self.assertEqual(response.status,200)
             self.assertIn("default-src 'self'",response.headers['Content-Security-Policy'])
             self.assertIn(b'The Hidden Colouring',response.read())
+
+    def test_replacement_does_not_exhaust_sessions(self):
+        _, state = self.post({'action': 'create'})
+        initial_count = len(SESSIONS)
+        for _ in range(140):
+            old = state['session']
+            status, state = self.post({'action': 'create', 'session': old})
+            self.assertEqual(status, 200)
+            self.assertNotIn(old, SESSIONS)
+        self.assertEqual(len(SESSIONS), initial_count)
+
+    def test_independent_export_and_verifier_endpoints(self):
+        _, state = self.post({'action':'create'})
+        token = state['session']
+        for action in ('seal','challenge','open'):
+            _, state = self.post({'action':action, 'session':token})
+        status, record = self.post({'session':token}, path='/api/transcript')
+        self.assertEqual(status, 200)
+        self.assertNotIn('session', record)
+        self.assertEqual(len(record['rounds']), 1)
+        status, result = self.post({'document':record}, path='/api/verify')
+        self.assertEqual(status, 200)
+        self.assertTrue(result['accepted'])
+        record['rounds'][0]['openings'][0]['colour'] = 8
+        _, result = self.post({'document':record}, path='/api/verify')
+        self.assertFalse(result['accepted'])
+
+    def test_source_endpoint_contains_actual_functions_not_session_values(self):
+        with urlopen(self.url+'/api/source') as response:
+            source = json.load(response)
+        self.assertIn('def seal(self)', source['Session.seal']['source'])
+        self.assertIn('verify', source)
+        self.assertNotIn('session', source)
+
+    def test_protocol_lab_and_modules_are_served(self):
+        with urlopen(self.url+'/lab.html') as response:
+            page = response.read().decode()
+            self.assertIn('id="advance"', page)
+            self.assertIn('type="module" src="lab.js"', page)
+        with urlopen(self.url+'/lab-model.mjs') as response:
+            self.assertIn('javascript', response.headers['Content-Type'])
+            self.assertIn(b'tamperedCopy', response.read())
 
     def test_session_not_found(self):
         status, _ = self.post({'action':'seal','session':'missing'})

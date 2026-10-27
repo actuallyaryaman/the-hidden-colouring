@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Inspect a real graph-colouring proof: Python execution, public messages, digest recomputation, tamper rejection and portable transcript verification.">
+<title>Protocol Lab — The Hidden Colouring</title>
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="lab.css">
+<script type="module" src="lab.js"></script>
+</head>
+<body>
+<a class="skip" href="#lab">Skip to the lab</a>
+<aside class="rail">
+<a href="/" class="brand">The Hidden<br> Colouring<span class="brand-mark" aria-hidden="true">◒</span></a>
+<p class="rail-intro">Follow the computation.<br>Check the evidence.</p>
+<nav aria-label="Lab sections"><a class="chapter" href="#execution">Run the protocol</a><a class="chapter" href="#messages">Inspect the messages</a><a class="chapter" href="#checks">Verify the openings</a><a class="chapter" href="#tamper">Try changing an answer</a><a class="chapter" href="#portable">Check a saved record</a></nav>
+<div class="rail-bottom"><a class="rail-link" href="/">← Beginner lesson</a><a class="rail-link" href="/references.html">Sources & boundaries →</a><span class="course">SE6003 · CRYPTOGRAPHY</span></div>
+</aside>
+<main id="lab">
+<nav class="mode-switch" aria-label="Project views"><a href="/">Learn the idea</a><a href="/lab.html" aria-current="page">Protocol Lab</a></nav>
+<header class="topline"><span>REAL EXECUTION · PUBLIC EVIDENCE</span><span>PYTHON 3</span></header>
+<section class="heading"><h1>The proof, in plain sight.</h1><p>Run one action at a time. See the message it sends, the Python function that runs, and the checks behind the verdict.</p></section>
+<section id="execution" class="lab-execution" aria-labelledby="execution-title">
+<div class="execution-head"><h2 id="execution-title">Run a round</h2><label>Prover’s strategy<select class="form-select" id="strategy"><option value="honest">Valid solution · fresh seals</option><option value="cheat">Invalid solution · two bad edges</option><option value="impossible">Impossible graph · K4</option><option value="reuse">Broken privacy · reused seals</option></select></label></div>
+<p class="lab-status" id="phase" aria-live="polite">Connecting to the local Python process…</p>
+<div class="boundary-strip"><div><span class="boundary-label">PRIVATE · PROVER ONLY</span><p>Full colouring and unopened salts stay in the Python process.</p></div><div><span class="boundary-label">PUBLIC · VERIFIER’S VIEW</span><div id="rooms" class="lab-rooms" aria-label="Colours disclosed to the verifier"></div></div></div>
+<div class="lab-actions"><button class="button primary" id="advance" disabled>Seal answers</button><label>Challenge<select id="edge"><option value="random">Uniform random edge</option></select></label><button class="text-button" id="restart">Start a new session</button></div>
+<p id="action-note" class="small-note"></p><p id="lab-message" class="message" role="status" aria-live="polite"></p>
+</section>
+<section id="messages" class="lab-section"><div class="section-head"><h2>Messages, not magic.</h2><p>Each entry below is an actual protocol message. Select one to inspect its public contents and the function that produced it.</p></div>
+<div class="lab-inspector"><div><div id="timeline" class="timeline" aria-label="Public message timeline"></div><p id="byte-total" class="small-note"></p></div><div class="payload-panel"><h3 id="payload-title">No message sent yet</h3><pre id="payload">Seal the answers to send the first message.</pre><details open><summary id="source-label">Python implementation</summary><pre id="source">The actual function source will appear here.</pre></details></div></div>
+</section>
+<section id="checks" class="lab-section"><div class="section-head"><h2>Watch the verifier work.</h2><p>Opening a room reveals its colour and salt. The verifier encodes that input, hashes it again, and compares the result with the original commitment.</p></div><div id="verification" aria-live="polite"><p class="small-note">Open the challenged endpoints to see the individual checks.</p></div><div id="digests" class="digest-grid"></div><details class="verifier-source"><summary>The verifier’s Python source</summary><pre id="verify-source">Loading…</pre></details><details class="verifier-source"><summary>Encoding and SHA-256 implementation</summary><pre id="encoding-source">Loading…</pre></details></section>
+<section id="tamper" class="lab-section"><div class="section-head"><h2>Change one thing. Check again.</h2><p>Try changing a copy of the public record. The original session stays intact. The same Python verifier checks your edited copy.</p></div><div class="lab-actions"><label>Change<select id="tamper-kind"><option value="colour">The first revealed colour</option><option value="salt">One character of the salt</option><option value="vertex">The first room identifier</option><option value="commitment">One character of the commitment</option></select></label><button class="button" id="tamper-button" disabled>Change & verify</button><button class="text-button" id="original-button" disabled>Verify original record</button></div><p class="small-note" id="tamper-hint">Complete one round to unlock this experiment.</p><div id="tamper-result" aria-live="polite"></div></section>
+<section id="portable" class="lab-section"><div class="section-head"><h2>Take the evidence with you.</h2><p>Download the public record. It contains every completed round’s commitments, challenge and two openings—never unopened answers or session credentials.</p></div><div class="lab-actions"><button class="button" id="download" disabled>Download transcript</button><label class="file-label">Check a saved transcript<input id="import" type="file" accept="application/json,.json"></label></div><p class="small-note">Verify it from a separate terminal, even after the server has stopped:</p><pre class="cli">python3 transcript.py transcript.json</pre><div id="import-result" aria-live="polite"></div><p class="scope-note">A saved record proves its openings are consistent. It cannot prove the challenges were unpredictable or establish that a graph has a solution. That distinction is why an arranged transcript is not a successful live proof.</p></section>
+<footer><span>The Hidden Colouring</span><span>Public data. Inspectable checks.</span><a href="/references.html">Sources & boundaries →</a></footer>
+</main>
+</body>
+</html>

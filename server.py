@@ -1,5 +1,7 @@
 
 import argparse
+import inspect
+import protocol
 import json
 import secrets
 import threading
@@ -7,6 +9,7 @@ import time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from protocol import Session
+from transcript import verify_transcript
 
 ROOT = Path(__file__).resolve().parent / "web"
 SESSIONS = {}
@@ -17,6 +20,19 @@ TTL = 3600
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
+
+    def do_GET(self):
+        if self.path == "/api/source":
+            functions = [Session.seal, Session.challenge, Session.open,
+                         protocol.commit, protocol.encode_commitment, protocol.verify]
+            sources = {}
+            for function in functions:
+                lines, start = inspect.getsourcelines(function)
+                sources[function.__qualname__] = {"file": "protocol.py", "line": start,
+                                                  "source": "".join(lines)}
+            self.respond(200, sources)
+            return
+        super().do_GET()
 
     def translate_path(self, path):
         allowed = {"/evidence/acceptance.svg", "/evidence/experiments.csv", "/evidence/experiments.json"}
@@ -39,7 +55,7 @@ class Handler(SimpleHTTPRequestHandler):
         self.wfile.write(encoded)
 
     def do_POST(self):
-        if self.path != "/api/protocol":
+        if self.path not in ("/api/protocol", "/api/transcript", "/api/verify"):
             self.respond(404, {"error": "Unknown endpoint"})
             return
         
@@ -48,21 +64,34 @@ class Handler(SimpleHTTPRequestHandler):
             return
         try:
             length = int(self.headers.get("Content-Length", 0))
-            if not 0 < length <= 8192:
+            if not 0 < length <= 1024 * 1024:
                 raise ValueError("Invalid request size")
             data = json.loads(self.rfile.read(length))
             if not isinstance(data, dict):
                 raise ValueError("Expected an object")
+            if self.path == "/api/verify":
+                self.respond(200, verify_transcript(data.get("document")))
+                return
             with LOCK:
                 now = time.monotonic()
                 for key in list(SESSIONS):
                     if now - SESSIONS[key][1] > TTL:
                         del SESSIONS[key]
+                if self.path == "/api/transcript":
+                    token = data.get("session")
+                    if not isinstance(token, str) or token not in SESSIONS:
+                        raise ValueError("Session expired. Restart this lesson.")
+                    self.respond(200, SESSIONS[token][0].transcript())
+                    return
                 if data.get("action") == "create":
+                    
+                    previous = data.get("session")
+                    session = Session(data.get("graph", "puzzle"), data.get("mode", "honest"))
+                    if isinstance(previous, str) and previous in SESSIONS:
+                        del SESSIONS[previous]
                     if len(SESSIONS) >= 128:
                         raise ValueError("Too many sessions; restart the local server")
                     token = secrets.token_urlsafe(24)
-                    session = Session(data.get("graph", "puzzle"), data.get("mode", "honest"))
                 else:
                     token = data.get("session")
                     if not isinstance(token, str) or token not in SESSIONS:

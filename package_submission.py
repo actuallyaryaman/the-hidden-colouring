@@ -3,7 +3,7 @@ from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parent
-ALLOWED = {'.py', '.md', '.html', '.css', '.js', '.json', '.csv', '.svg', '.ttf', '.txt'}
+ALLOWED = {'.py', '.md', '.html', '.css', '.js', '.mjs', '.json', '.csv', '.svg', '.ttf', '.txt'}
 DEST = ROOT / 'hidden-colouring-source.zip'
 
 if __name__ == '__main__':
