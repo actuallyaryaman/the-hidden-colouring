@@ -1,0 +1,99 @@
+# The Hidden Colouring
+
+A guided, interactive implementation of the classical zero-knowledge protocol
+for graph three-colourability. Built for a nontechnical visitor and for a
+SE6003 implementation project. The lesson is powered by Python, not a simulated
+browser-only crypto engine.
+
+## Start
+
+Requirements: Python 3.10 or later. No third-party Python packages, Node packages,
+accounts, internet access, or API keys are needed to run the application.
+
+```sh
+cd zero-knowledge-lab
+python3 server.py
+```
+
+Open **http://127.0.0.1:8767**. Stop the server with Ctrl+C. To use another port:
+`python3 server.py --port 8768`.
+
+The browser files must be served by the Python application; opening index.html
+as a file will not connect to the protocol. The server binds only to your own
+computer. This is a teaching application, not a remotely hosted secure service.
+
+## The six chapters
+
+1. **The puzzle:** change colours and learn the constraint. A solution button
+   prevents the lesson from becoming a puzzle-solving exercise.
+2. **Seal the answers:** receive actual SHA-256 commitments; unopened values
+   stay in the Python process.
+3. **Ask a question:** pick one edge after commitment. Use uniform random
+   selection when discussing probability guarantees.
+4. **Open two answers:** check both commitments and unequal colours. Inspect
+   full hashes and salts in the optional receipt.
+5. **Repeat the test:** fresh permutations and commitments, a round transcript,
+   and a carefully labelled false-acceptance bound.
+6. **Break the rules:** compare an invalid colouring, a non-three-colourable
+   graph (K4), and the privacy failure caused by reused commitments.
+
+Use the chapter rail (or compact chapter selector on small screens) to revisit
+an explanation. Direct chapter navigation starts a fresh illustrative session.
+Following Next through chapters 2–5 preserves the same round.
+
+## Verify
+
+```sh
+python3 -m unittest discover -s tests -v
+python3 -m compileall -q protocol.py server.py experiments.py
+```
+
+Or `make check`, which also uses Node to syntax-check the browser JavaScript.
+Node is only needed for this optional developer check, not for running the app.
+
+## Experiments
+
+```sh
+python3 experiments.py --trials 1000 --rounds 1 2 5 10 20
+```
+
+Each configuration uses fresh independent runs. A run rejects at its first bad
+round. Outputs in `results/`:
+
+- `experiments.csv`: observations, exact strategy probabilities, 95% Wilson
+  intervals, timings, transcript byte counts.
+- `experiments.json`: the same results with runtime environment, time, and
+  measurement definitions.
+- `acceptance.svg`: observations with intervals and theoretical reference lines.
+
+These are actual measurements, not invented UI statistics. Results will vary
+with randomness and hardware. The SVG lines join theory values at the measured
+round counts; they are not a fit to the observations. Timing includes JSON
+serialisation; transcript bytes exclude HTTP and the teaching interface.
+
+## Source map
+
+- `protocol.py`: commitments, prover state machine, public verifier, graphs,
+  and an honest-verifier transcript simulator.
+- `server.py`: standard-library local server and session API.
+- `web/`: responsive lesson, design tokens, and local fonts.
+- `experiments.py`: experiment runner and export generation.
+- `tests/`: protocol and local API checks.
+- `package_submission.py`: source ZIP generation, excluding caches and binaries.
+
+## What this project claims
+
+The mathematical protocol illustrates completeness, soundness, and zero
+knowledge. The concrete hash commitment is an educational instantiation with
+explicit assumptions. Tests and empirical detection rates do not prove zero
+knowledge. The simulator included here covers a uniformly random honest
+verifier; the report must distinguish this from the full malicious-verifier
+argument.
+
+The graph and its small teaching witness are intentionally known. Zero knowledge
+restricts what the interaction discloses; it does not prevent solving the public
+puzzle independently. A local computer owner can inspect both parties.
+
+Original course PDFs and the user-provided video remain in the parent directory.
+No interpretation of the video is claimed; it was not used as an authoritative
+protocol source.

@@ -1,0 +1,28 @@
+:root {
+  --color-paper: oklch(97% .012 85);
+  --color-surface: oklch(99% .006 85);
+  --color-paper-dark: oklch(93% .019 85);
+  --color-ink: oklch(25% .025 155);
+  --color-muted: oklch(47% .018 150);
+  --color-rule: oklch(83% .018 85);
+  --color-accent: oklch(36% .07 160);
+  --color-accent-ink: oklch(98% .01 90);
+  --color-focus: oklch(64% .13 55);
+  --color-success: oklch(35% .09 155);
+  --color-error: oklch(43% .15 25);
+  --color-error-soft: oklch(94% .028 25);
+  --color-success-soft: oklch(93% .028 155);
+  --color-one: oklch(52% .16 35);
+  --color-two: oklch(46% .095 220);
+  --color-three: oklch(71% .135 85);
+  --color-clear: oklch(100% 0 0 / 0);
+  --color-shadow: oklch(25% .025 155 / .09);
+  --font-display: 'Lab Serif', 'Palatino Linotype', 'Book Antiqua', serif;
+  --font-body: 'Lab Sans', 'Trebuchet MS', sans-serif;
+  --font-mono: 'Lab Mono', monospace;
+  --space-xs: 4px; --space-sm: 8px; --space-md: 16px; --space-lg: 24px; --space-xl: 32px; --space-2xl: 48px; --space-3xl: 64px;
+  --text-small: .78rem; --text-base: 1rem; --text-large: 1.2rem; --text-display: clamp(2rem, 3.5vw, 3.2rem);
+  --ease-out: cubic-bezier(.2,.8,.2,1); --ease-in: cubic-bezier(.4,0,1,1); --ease-in-out: cubic-bezier(.4,0,.2,1);
+  --dur-fast: 140ms; --dur-medium: 220ms;
+  --rule-thin: 1px; --radius-sm: 3px;
+}

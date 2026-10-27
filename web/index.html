@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A hands-on lesson in zero-knowledge proofs. Seal a colouring, challenge one edge, and learn how to verify a claim while keeping its solution hidden.">
+<title>The Hidden Colouring — a zero-knowledge field guide</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#lesson">Skip to the lesson</a>
+<aside class="rail">
+  <a href="/" class="brand" aria-label="The Hidden Colouring, restart">The Hidden<br> Colouring<span class="brand-mark" aria-hidden="true">◒</span></a>
+  <p class="rail-intro">A field guide to proving<br>without revealing.</p>
+  <label class="mobile-chapter">Your next step<select id="chapter-picker" aria-label="Lesson chapter"></select></label>
+  <nav aria-label="Lesson chapters" id="chapters"></nav>
+  <div class="rail-bottom"><button class="rail-link" id="notes-button">The mathematics →</button><button class="rail-link" id="results-button">Measured results →</button><button class="rail-link" id="about-button">About this project →</button><span class="course">SE6003 · CRYPTOGRAPHY</span></div>
+</aside>
+<main id="lesson">
+  <header class="topline"><span>AN INTERACTIVE FIELD GUIDE</span><span id="chapter-count">01 / 06</span></header>
+  <section class="heading"><div><p class="eyebrow" id="chapter-label">THE STARTING POINT</p><h1 id="title">A puzzle. A private answer.</h1></div><p id="intro"></p></section>
+  <div class="workbench">
+    <section class="board" aria-label="Interactive colouring puzzle">
+      <div class="board-top"><span id="board-label">THE PUZZLE</span><span id="board-status" class="board-status">Six rooms · three colours</span></div>
+      <div id="graph-wrap"><svg id="graph" role="group" aria-label="The public graph and colours visible at this step"></svg></div>
+      <div class="legend" id="legend"><span><i class="dot one"></i>1 · Terracotta</span><span><i class="dot two"></i>2 · Petrol</span><span><i class="dot three"></i>3 · Ochre</span></div>
+      <div id="board-extra"></div>
+      <div class="board-caption" id="board-caption"></div>
+    </section>
+    <aside class="fieldnote" aria-label="What is happening at this step">
+      <span class="note-index" id="note-index">FIELD NOTE 01</span><h2 id="note-title"></h2><p id="note-body"></p>
+      <div class="roles"><div><span class="role-name">THE PROVER</span><p id="prover-note"></p></div><div><span class="role-name">YOU, THE VERIFIER</span><p id="verifier-note"></p></div></div>
+      <div class="takeaway"><span>THE THING TO NOTICE</span><p id="takeaway"></p></div>
+    </aside>
+  </div>
+  <div id="interaction" class="interaction"></div>
+  <p id="message" class="message" role="status" aria-live="polite"></p>
+  <div class="lesson-controls"><button class="text-button" id="back">← Previous</button><span id="step-hint"></span><button class="button primary" id="continue">Next step →</button></div>
+  <section class="understand" id="understand"><h2 id="understand-title"></h2><div id="understand-body"></div></section>
+  <footer><span>The Hidden Colouring</span><span>Learn the idea. Inspect the evidence.</span><button class="text-button" id="sources-button">Sources & limitations →</button></footer>
+</main>
+<dialog id="info-dialog"><div class="dialog-top"><span>REFERENCE NOTES</span><button class="text-button" id="close-dialog" aria-label="Close reference notes">Close ×</button></div><div id="dialog-body"></div></dialog>
+<noscript>This interactive lesson needs JavaScript. Its Python protocol and experiments can also be run separately; see the README.</noscript>
+</body>
+</html>
