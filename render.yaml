@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: the-hidden-colouring
+    runtime: python
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: python -m compileall -q protocol.py server.py transcript.py experiments.py
+    startCommand: python server.py --host 0.0.0.0
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"

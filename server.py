@@ -1,6 +1,7 @@
 
 import argparse
 import inspect
+import os
 import protocol
 import json
 import secrets
@@ -22,6 +23,9 @@ class Handler(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
     def do_GET(self):
+        if self.path == "/healthz":
+            self.respond(200, {"status": "ok"})
+            return
         if self.path == "/api/source":
             functions = [Session.seal, Session.challenge, Session.open,
                          protocol.commit, protocol.encode_commitment, protocol.verify]
@@ -109,16 +113,28 @@ class Handler(SimpleHTTPRequestHandler):
         except (ValueError, TypeError) as error:
             self.respond(400, {"error": str(error)})
 
+    def list_directory(self, path):
+        self.send_error(404, "Not found")
+        return None
+
     def log_message(self, fmt, *args):
         pass
 
 
+def parse_arguments(argv=None):
+    parser = argparse.ArgumentParser(description="Classroom demonstration server. Local by default; explicit host for deployment.")
+    parser.add_argument("--host", default="127.0.0.1", help="Bind address; local-only by default")
+    parser.add_argument("--port", type=int, default=os.environ.get("PORT", "8767"))
+    args = parser.parse_args(argv)
+    if not 1 <= args.port <= 65535:
+        parser.error("Port must be between 1 and 65535")
+    return args
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=int, default=8767)
-    args = parser.parse_args()
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
-    print(f"The Hidden Colouring · http://127.0.0.1:{args.port}", flush=True)
+    args = parse_arguments()
+    server = ThreadingHTTPServer((args.host, args.port), Handler)
+    print(f"The Hidden Colouring · http://{args.host}:{args.port}", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

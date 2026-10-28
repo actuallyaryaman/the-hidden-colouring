@@ -129,3 +129,15 @@ would reject immediately.
 
 The old browser-only demonstration remains separate from this Python project.
 All primary references are collected on the Sources page.
+
+## Render hosting
+
+`render.yaml` configures one Free Python web service in Singapore. Connect this
+repository through **New > Blueprint** in Render, review the Free service, and
+deploy. No database, API key, or third-party package is required.
+
+The server remains local-only by default. Deployment explicitly uses
+`python server.py --host 0.0.0.0` and reads Render's `PORT` environment variable.
+`/healthz` is a lightweight deployment health check. Hosted sessions are cleared
+on restart; the free service sleeps when idle. The hosted demo URL is public;
+the GitHub repository can stay private.

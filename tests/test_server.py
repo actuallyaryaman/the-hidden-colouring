@@ -1,10 +1,12 @@
 import json
+import os
+from unittest.mock import patch
 import threading
 import unittest
 from http.server import ThreadingHTTPServer
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
-from server import Handler, SESSIONS
+from server import Handler, SESSIONS, parse_arguments
 
 
 class ServerTests(unittest.TestCase):
@@ -28,6 +30,16 @@ class ServerTests(unittest.TestCase):
         except HTTPError as error:
             with error:
                 return error.code, json.load(error)
+
+    def test_health_endpoint(self):
+        with urlopen(self.url + "/healthz") as response:
+            self.assertEqual(response.status, 200)
+            self.assertEqual(json.load(response), {"status": "ok"})
+
+    def test_directory_listing_disabled(self):
+        with self.assertRaises(HTTPError) as caught:
+            urlopen(self.url + "/fonts/")
+        self.assertEqual(caught.exception.code, 404)
 
     def test_full_http_round(self):
         _, state = self.post({'action':'create'})
@@ -110,3 +122,16 @@ class ServerTests(unittest.TestCase):
 
 
 if __name__=='__main__': unittest.main()
+
+
+class StartupTests(unittest.TestCase):
+    def test_local_defaults(self):
+        with patch.dict(os.environ, {}, clear=True):
+            args = parse_arguments([])
+        self.assertEqual((args.host, args.port), ("127.0.0.1", 8767))
+
+    def test_render_port_and_explicit_override(self):
+        with patch.dict(os.environ, {"PORT": "10000"}):
+            args = parse_arguments(["--host", "0.0.0.0"])
+            self.assertEqual((args.host, args.port), ("0.0.0.0", 10000))
+            self.assertEqual(parse_arguments(["--port", "8768"]).port, 8768)
