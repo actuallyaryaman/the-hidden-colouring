@@ -4,13 +4,13 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Inspect a real graph-colouring proof: Python execution, public messages, digest recomputation, tamper rejection and portable transcript verification.">
 <title>Protocol Lab — The Hidden Colouring</title>
-<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="lab.css">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="lab.css">
 <script type="module" src="lab.js"></script>
 </head>
 <body>
 <a class="skip" href="#lab">Skip to the lab</a>
 <aside class="rail">
-<a href="/" class="brand">The Hidden<br> Colouring<span class="brand-mark" aria-hidden="true">◒</span></a>
+<a href="/" class="brand"><svg class="brand-symbol" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8 9 35h30L24 8Z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="24" cy="8" r="5" fill="var(--color-three)"/><circle cx="9" cy="35" r="5" fill="var(--color-one)"/><circle cx="39" cy="35" r="5" fill="var(--color-two)"/><rect x="17" y="21" width="14" height="12" rx="2" fill="var(--color-ink)" stroke="currentColor" stroke-width="1.5"/><path d="M21 21v-3a3 3 0 0 1 6 0v3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span class="brand-wordmark">The Hidden<br> Colouring</span></a>
 <p class="rail-intro">Follow the computation.<br>Check the evidence.</p>
 <nav aria-label="Lab sections"><a class="chapter" href="#execution">Run the protocol</a><a class="chapter" href="#messages">Inspect the messages</a><a class="chapter" href="#checks">Verify the openings</a><a class="chapter" href="#tamper">Try changing an answer</a><a class="chapter" href="#portable">Check a saved record</a></nav>
 <div class="rail-bottom"><a class="rail-link" href="/">← Beginner lesson</a><a class="rail-link" href="/references.html">Sources & boundaries →</a><span class="course">SE6003 · CRYPTOGRAPHY</span></div>
@@ -21,7 +21,7 @@
 <section class="heading"><h1>The proof, in plain sight.</h1><p>Run one action at a time. See the message it sends, the Python function that runs, and the checks behind the verdict.</p></section>
 <section id="execution" class="lab-execution" aria-labelledby="execution-title">
 <div class="execution-head"><h2 id="execution-title">Run a round</h2><label>Prover’s strategy<select class="form-select" id="strategy"><option value="honest">Valid solution · fresh seals</option><option value="cheat">Invalid solution · two bad edges</option><option value="impossible">Impossible graph · K4</option><option value="reuse">Broken privacy · reused seals</option></select></label></div>
-<p class="lab-status" id="phase" aria-live="polite">Connecting to the local Python process…</p>
+<p class="lab-status" id="phase" aria-live="polite">Connecting to the Python server…</p>
 <div class="boundary-strip"><div><span class="boundary-label">PRIVATE · PROVER ONLY</span><p>Full colouring and unopened salts stay in the Python process.</p></div><div><span class="boundary-label">PUBLIC · VERIFIER’S VIEW</span><div id="rooms" class="lab-rooms" aria-label="Colours disclosed to the verifier"></div></div></div>
 <div class="lab-actions"><button class="button primary" id="advance" disabled>Seal answers</button><label>Challenge<select id="edge"><option value="random">Uniform random edge</option></select></label><button class="text-button" id="restart">Start a new session</button></div>
 <p id="action-note" class="small-note"></p><p id="lab-message" class="message" role="status" aria-live="polite"></p>
@@ -33,7 +33,7 @@
 <section id="tamper" class="lab-section"><div class="section-head"><h2>Change one thing. Check again.</h2><p>Try changing a copy of the public record. The original session stays intact. The same Python verifier checks your edited copy.</p></div><div class="lab-actions"><label>Change<select id="tamper-kind"><option value="colour">The first revealed colour</option><option value="salt">One character of the salt</option><option value="vertex">The first room identifier</option><option value="commitment">One character of the commitment</option></select></label><button class="button" id="tamper-button" disabled>Change & verify</button><button class="text-button" id="original-button" disabled>Verify original record</button></div><p class="small-note" id="tamper-hint">Complete one round to unlock this experiment.</p><div id="tamper-result" aria-live="polite"></div></section>
 <section id="portable" class="lab-section"><div class="section-head"><h2>Take the evidence with you.</h2><p>Download the public record. It contains every completed round’s commitments, challenge and two openings—never unopened answers or session credentials.</p></div><div class="lab-actions"><button class="button" id="download" disabled>Download transcript</button><label class="file-label">Check a saved transcript<input id="import" type="file" accept="application/json,.json"></label></div><p class="small-note">Verify it from a separate terminal, even after the server has stopped:</p><pre class="cli">python3 transcript.py transcript.json</pre><div id="import-result" aria-live="polite"></div><p class="scope-note">A saved record proves its openings are consistent. It cannot prove the challenges were unpredictable or establish that a graph has a solution. That distinction is why an arranged transcript is not a successful live proof.</p></section>
 <footer class="project-footer" aria-label="Project credits">
-  <div class="footer-heading"><span class="footer-title">The Hidden Colouring</span><p>Nanyang Technological University · SE6003 Cryptography</p></div>
+  <div class="footer-heading"><span class="footer-title">The Hidden Colouring</span><p class="footer-purpose">An interactive zero-knowledge lab</p><p>Nanyang Technological University · SE6003 Cryptography</p></div>
   <div class="footer-credits"><p class="footer-label">A project by</p><div class="footer-person"><span>Aryaman Srivastava</span><a href="https://github.com/actuallyaryaman">GitHub</a><a href="https://www.linkedin.com/in/actuallyaryaman/">LinkedIn</a></div><div class="footer-person"><span>Gurmehr Singh</span><a href="https://www.linkedin.com/in/gurmehrs/">LinkedIn</a></div></div>
   <div class="footer-links"><a href="https://github.com/actuallyaryaman/the-hidden-colouring">Project repository ↗</a><a href="/references.html">Sources &amp; limitations →</a></div>
 </footer>

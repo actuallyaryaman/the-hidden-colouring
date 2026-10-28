@@ -16,7 +16,7 @@ function saveSession(token) {
 async function post(path, body) {
   const response = await fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
   const result = await response.json();
-  if (!response.ok) throw new Error(result.error || 'The local Python process could not complete this action.');
+  if (!response.ok) throw new Error(result.error || 'The Python server could not complete this action.');
   return result;
 }
 async function protocol(action, extra = {}) {

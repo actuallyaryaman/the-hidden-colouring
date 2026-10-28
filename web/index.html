@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="A hands-on lesson in zero-knowledge proofs. Seal a colouring, challenge one edge, and learn how to verify a claim while keeping its solution hidden.">
 <title>The Hidden Colouring — a zero-knowledge field guide</title>
-<link rel="stylesheet" href="tokens.css">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="styles.css">
 <script src="app.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#lesson">Skip to the lesson</a>
 <aside class="rail">
-  <a href="/" class="brand" aria-label="The Hidden Colouring, restart">The Hidden<br> Colouring<span class="brand-mark" aria-hidden="true">◒</span></a>
+  <a href="/" class="brand" aria-label="The Hidden Colouring, restart"><svg class="brand-symbol" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8 9 35h30L24 8Z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="24" cy="8" r="5" fill="var(--color-three)"/><circle cx="9" cy="35" r="5" fill="var(--color-one)"/><circle cx="39" cy="35" r="5" fill="var(--color-two)"/><rect x="17" y="21" width="14" height="12" rx="2" fill="var(--color-ink)" stroke="currentColor" stroke-width="1.5"/><path d="M21 21v-3a3 3 0 0 1 6 0v3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span class="brand-wordmark">The Hidden<br> Colouring</span></a>
   <p class="rail-intro">A field guide to proving<br>without revealing.</p>
   <label class="mobile-chapter">Your next step<select id="chapter-picker" aria-label="Lesson chapter"></select></label>
   <nav aria-label="Lesson chapters" id="chapters"></nav>
@@ -41,7 +41,7 @@
   <div class="lesson-controls"><button class="text-button" id="back">← Previous</button><span id="step-hint"></span><button class="button primary" id="continue">Next step →</button></div>
   <section class="understand" id="understand"><h2 id="understand-title"></h2><div id="understand-body"></div></section>
   <footer class="project-footer" aria-label="Project credits">
-  <div class="footer-heading"><span class="footer-title">The Hidden Colouring</span><p>Nanyang Technological University · SE6003 Cryptography</p></div>
+  <div class="footer-heading"><span class="footer-title">The Hidden Colouring</span><p class="footer-purpose">An interactive zero-knowledge lab</p><p>Nanyang Technological University · SE6003 Cryptography</p></div>
   <div class="footer-credits"><p class="footer-label">A project by</p><div class="footer-person"><span>Aryaman Srivastava</span><a href="https://github.com/actuallyaryaman">GitHub</a><a href="https://www.linkedin.com/in/actuallyaryaman/">LinkedIn</a></div><div class="footer-person"><span>Gurmehr Singh</span><a href="https://www.linkedin.com/in/gurmehrs/">LinkedIn</a></div></div>
   <div class="footer-links"><a href="https://github.com/actuallyaryaman/the-hidden-colouring">Project repository ↗</a><button class="text-button" id="sources-button">Sources &amp; limitations →</button></div>
 </footer>
