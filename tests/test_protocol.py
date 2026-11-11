@@ -93,7 +93,6 @@ class ProtocolTests(unittest.TestCase):
         with self.assertRaises(ValueError): Session('impossible', 'honest')
 
     def test_simulator_without_witness(self):
-        
         for graph in GRAPHS.values():
             for _ in range(20):
                 t = simulate_honest_verifier(graph)

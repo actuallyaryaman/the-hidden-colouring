@@ -11,7 +11,7 @@ function savedSession() {
   try { return sessionStorage.getItem('colouring-session'); } catch { return null; }
 }
 function saveSession(token) {
-  try { sessionStorage.setItem('colouring-session', token); } catch {   }
+  try { sessionStorage.setItem('colouring-session', token); } catch { }
 }
 async function post(path, body) {
   const response = await fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
@@ -176,7 +176,7 @@ $('import').addEventListener('change',()=>perform(async()=>{
   renderChecks($('import-result'),await post('/api/verify',{document:record}));
 }));
 await perform(async()=>{
-  try { const response=await fetch('/api/source');if(response.ok)sources=await response.json(); } catch {   }
+  try { const response=await fetch('/api/source');if(response.ok)sources=await response.json(); } catch { }
   $('verify-source').textContent=sources.verify?.source || 'Source unavailable.';
   $('encoding-source').textContent=[sources.encode_commitment?.source,sources.commit?.source].filter(Boolean).join('\n') || 'Source unavailable.';
   await start();

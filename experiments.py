@@ -43,7 +43,7 @@ def run(trials, rounds_list):
                     total_rounds += 1
                     if not session.verdict['accepted']:
                         accepted = False
-                        break  
+                        break
                     session.next_round()
                 successes += accepted
             elapsed = time.perf_counter()-started
@@ -60,7 +60,6 @@ def run(trials, rounds_list):
 
 
 def plot(rows, path):
-    
     width, height = 760, 420
     left, top, pw, ph = 70, 45, 650, 300
     max_rounds = max(r['rounds'] for r in rows)

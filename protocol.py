@@ -63,11 +63,10 @@ def bad_edges(graph: Graph, colouring) -> list[int]:
 
 def colouring_for(graph: Graph, mode: str) -> tuple[int, ...]:
     if graph.witness is None:
-        
         return (0, 1, 2, 0)
     colours = list(graph.witness)
     if mode == "cheat":
-        colours[0] = 1  
+        colours[0] = 1
     return tuple(colours)
 
 
@@ -169,7 +168,6 @@ class Session:
             self.commitments, self.colours, self.salts = [], [], []
 
     def public(self):
-        
         graph = self.graph
         return {"graph": self.graph_id, "name": graph.name, "mode": self.mode,
                 "vertices": list(graph.vertices), "edges": graph.edges,

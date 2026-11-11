@@ -1,4 +1,3 @@
-
 export const strategies = {
   honest: {graph:'puzzle', mode:'honest'},
   cheat: {graph:'puzzle', mode:'cheat'},

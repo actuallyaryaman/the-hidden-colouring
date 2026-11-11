@@ -62,7 +62,6 @@ class Handler(SimpleHTTPRequestHandler):
         if self.path not in ("/api/protocol", "/api/transcript", "/api/verify"):
             self.respond(404, {"error": "Unknown endpoint"})
             return
-        
         if self.headers.get("Sec-Fetch-Site") == "cross-site":
             self.respond(403, {"error": "Use the local lesson page"})
             return
@@ -88,7 +87,6 @@ class Handler(SimpleHTTPRequestHandler):
                     self.respond(200, SESSIONS[token][0].transcript())
                     return
                 if data.get("action") == "create":
-                    
                     previous = data.get("session")
                     session = Session(data.get("graph", "puzzle"), data.get("mode", "honest"))
                     if isinstance(previous, str) and previous in SESSIONS:

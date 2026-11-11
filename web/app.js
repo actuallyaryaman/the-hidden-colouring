@@ -1,5 +1,4 @@
 'use strict';
-
 const $ = id => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
 const chapterNames = ['The puzzle', 'Seal the answers', 'Ask a question', 'Open two answers', 'Repeat the test', 'Break the rules'];
@@ -128,7 +127,6 @@ $('chapter-picker').addEventListener('change',e=>go(Number(e.target.value)));
 $('back').addEventListener('click',()=>go(Math.max(0,chapter-1)));
 $('continue').addEventListener('click',async()=>{
  if(busy)return;
- 
  if(chapter>=1&&chapter<=3){chapter++;message();render();$('lesson').scrollIntoView({block:'start',behavior:'instant'});}
  else await go(chapter===5?0:chapter+1);
 });
