@@ -12,6 +12,8 @@ if __name__ == '__main__':
             relative = source.relative_to(ROOT)
             if not source.is_file() or any((part.startswith('.') and part != '.python-version') or part == '__pycache__' for part in relative.parts):
                 continue
+            if relative.parts[0] in ('docs', 'report'):
+                continue
             if source.name in ('Makefile', '.python-version') or source.suffix in ALLOWED:
                 archive.write(source, Path('zero-knowledge-lab') / relative)
     print(f'Source archive: {DEST} ({DEST.stat().st_size:,} bytes). No compiled executables included.')
