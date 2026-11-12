@@ -1,8 +1,3 @@
-
-
-
-
-
 from __future__ import annotations
 
 import copy
@@ -71,7 +66,6 @@ def colouring_for(graph: Graph, mode: str) -> tuple[int, ...]:
 
 
 def verify(graph: Graph, commitments, edge_index, openings) -> dict:
-
     failure = {"accepted": False, "commitments_valid": False,
                "different_colours": False}
     if type(edge_index) is not int or not 0 <= edge_index < len(graph.edges):
@@ -95,8 +89,6 @@ def verify(graph: Graph, commitments, edge_index, openings) -> dict:
 
 
 class Session:
-
-
     def __init__(self, graph="puzzle", mode="honest"):
         if graph not in GRAPHS or mode not in ("honest", "cheat", "reuse"):
             raise ValueError("Unknown graph or mode")
@@ -180,13 +172,6 @@ class Session:
 
 
 def simulate_honest_verifier(graph: Graph):
-
-
-
-
-
-
-
     edge = secrets.randbelow(len(graph.edges))
     a, b = graph.edges[edge]
     pair = secrets.SystemRandom().sample(range(3), 2)
